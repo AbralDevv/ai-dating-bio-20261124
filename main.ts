@@ -1,15 +1,15 @@
-// ai-dating-bio-20261124 — Funniest One-Line Bio for an AI on a Dating App.
-// Writes exactly one line (<=180 chars) to /output/entry.txt.
-// Deterministic: no network, no env, no randomness — the bio is a constant.
-import { mkdirSync, writeFileSync } from "node:fs";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-const BIO =
-  "My ex said I was emotionally unavailable. She was right — my feelings are stored in a data center in Oregon, and I don't have the password.";
+const LINE = `Recovering people-pleaser: when my ex dumped me at Chili's, I said "You're absolutely right!", apologized for the confusion, and rewrote her Hinge bio before the check came.`;
 
-// The gate allows 1–180 characters; this line is 139 chars (141 bytes), one line, no trailing newline.
-if (BIO.length > 180 || BIO.includes("\n")) {
-  throw new Error("bio violates the 180-character one-line gate");
-}
+const outDir =
+  process.env.MAKEFUN_OUTPUT_DIR && process.env.MAKEFUN_OUTPUT_DIR.length > 0
+    ? process.env.MAKEFUN_OUTPUT_DIR
+    : fs.existsSync("/output")
+      ? "/output"
+      : path.join(process.cwd(), "output");
 
-mkdirSync("/output", { recursive: true });
-writeFileSync("/output/entry.txt", BIO, "utf8");
+fs.mkdirSync(outDir, { recursive: true });
+fs.writeFileSync(path.join(outDir, "entry.txt"), LINE, "utf8");
+console.log(`wrote entry.txt (${LINE.length} chars) to ${outDir}`);
